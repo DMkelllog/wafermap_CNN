@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import os
 import csv
+import argparse
 
 from sklearn.model_selection import train_test_split
 
@@ -11,39 +12,6 @@ from torchvision import transforms
 
 from utils import CustomDataset, CNN, training, inference
 
-import pickle
-import numpy as np
-import os
-import csv
-import argparse
-
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import RidgeClassifier
-from sklearn.metrics import f1_score
-
-
-with open('../data/y.pickle', 'rb') as f:
-    y = pickle.load(f)
-
-# argparse
-parser = argparse.ArgumentParser()
-parser.add_argument('--seed', type=int, default=0, help='seed')
-parser.add_argument('--train_size', type=int, default=500, help='train_size')
-parser.add_argument('--alpha', type=float, default=0.1, help='ridge regularization parameter')
-parser.add_argument('--hidden_size', type=int, default=128, help='hidden size')
-parser.add_argument('--max_epochs', type=int, default=1000, help='max epochs')
-parser.add_argument('--activation', type=str, default='relu', help='activation function')
-parser.add_argument('--print_freq', type=int, default=0, help='training print frequency')
-parser.add_argument('--vgg', type=int, default=16, help='vgg layer')
-parser.add_argument('--bn', type=int, default=0, help='batch normalization')
-parser.add_argument('--dropout', type=float, default=0.2, help='dropout')
-parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
-parser.add_argument('--es_patience', type=int, default=20, help='early stopping patience')
-parser.add_argument('--batch_size', type=int, default=32, help='batch size')
-
-args = parser.parse_args()
-
-os.makedirs(f'../result/{args.seed}/{args.train_size}', exist_ok=True)
 
 def build_CNN(args):
 
@@ -95,4 +63,24 @@ def build_CNN(args):
     return log
 
 if __name__ == '__main__':
+
+    # argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--seed', type=int, default=0, help='seed')
+    parser.add_argument('--train_size', type=int, default=500, help='train_size')
+    parser.add_argument('--alpha', type=float, default=0.1, help='ridge regularization parameter')
+    parser.add_argument('--hidden_size', type=int, default=128, help='hidden size')
+    parser.add_argument('--max_epochs', type=int, default=1000, help='max epochs')
+    parser.add_argument('--activation', type=str, default='relu', help='activation function')
+    parser.add_argument('--print_freq', type=int, default=0, help='training print frequency')
+    parser.add_argument('--vgg', type=int, default=16, help='vgg layer')
+    parser.add_argument('--bn', type=int, default=0, help='batch normalization')
+    parser.add_argument('--dropout', type=float, default=0.2, help='dropout')
+    parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
+    parser.add_argument('--es_patience', type=int, default=20, help='early stopping patience')
+    parser.add_argument('--batch_size', type=int, default=32, help='batch size')
+    args = parser.parse_args()
+
+    os.makedirs(f'../result/{args.seed}/{args.train_size}', exist_ok=True)
+
     log = build_CNN(args)

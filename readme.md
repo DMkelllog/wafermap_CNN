@@ -32,11 +32,11 @@ Wafer map defect pattern classification using CNN
 
 ## Dependencies
 
-* Python
-* Pandas
-* Pytorch
-* Scikit-learn
-* OpenCV
+* Python 3.8
+* Pytorch 1.9.1
+* Pandas 1.3.2
+* Scikit-learn 1.0.2
+* OpenCV-python 4.5.3
 
 ## References
 

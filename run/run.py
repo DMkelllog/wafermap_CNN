@@ -39,6 +39,7 @@ parser.add_argument('--bn', type=int, default=0, help='batch normalization')
 parser.add_argument('--dropout', type=float, default=0.2, help='dropout')
 parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
 parser.add_argument('--es_patience', type=int, default=20, help='early stopping patience')
+parser.add_argument('--batch_size', type=int, default=32, help='batch size')
 
 args = parser.parse_args()
 
@@ -58,8 +59,8 @@ def build_CNN(args):
     X_CNN_trainval, y_trainval = X_CNN_trainval[:args.train_size], y_trainval[:args.train_size]
     X_CNN_train, X_CNN_val, y_train, y_val = train_test_split(X_CNN_trainval, y_trainval, test_size=0.2, random_state=args.seed, stratify=y_trainval)
 
-    mode = args.interpolation
-    print(f'{args.seed} {args.train_size} {interpolation_list[mode]}')
+    mode = 'CNN'
+    print(f'{args.seed} {args.train_size}')
 
     augmentations = transforms.Compose([
         transforms.RandomRotation(degrees=180),
@@ -70,10 +71,10 @@ def build_CNN(args):
     dataset_CNN_trainval = CustomDataset(torch.from_numpy(X_CNN_trainval), y_trainval)
     dataset_CNN_test = CustomDataset(torch.from_numpy(X_CNN_test), y_test)
 
-    dataloader_CNN_train = DataLoader(dataset_CNN_train, batch_size=batch_size, shuffle=True, num_workers=4)
-    dataloader_CNN_val = DataLoader(dataset_CNN_val, batch_size=batch_size, shuffle=False, num_workers=4)
-    dataloader_CNN_trainval = DataLoader(dataset_CNN_trainval, batch_size=batch_size, shuffle=False, num_workers=4)
-    dataloader_CNN_test = DataLoader(dataset_CNN_test, batch_size=batch_size, shuffle=False, num_workers=4)
+    dataloader_CNN_train = DataLoader(dataset_CNN_train, batch_size=args.batch_size, shuffle=True, num_workers=4)
+    dataloader_CNN_val = DataLoader(dataset_CNN_val, batch_size=args.batch_size, shuffle=False, num_workers=4)
+    dataloader_CNN_trainval = DataLoader(dataset_CNN_trainval, batch_size=args.batch_size, shuffle=False, num_workers=4)
+    dataloader_CNN_test = DataLoader(dataset_CNN_test, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
     model = CNN(args, pretrained=True).cuda()
 
@@ -88,9 +89,9 @@ def build_CNN(args):
     is_file_exist = os.path.isfile('../result/result.csv')
     with open(f'../result/result.csv', 'a') as f:
         writer = csv.writer(f)
-        if not is_file_exist:
+        if not is_file_exist: 
             writer.writerow(['args.seed', 'args.train_size', 'mode', 'f1_macro', 'f1_micro'])
-        writer.writerow([args.seed, args.train_size, interpolation_list[mode], f1_macro_CNN_test, f1_micro_CNN_test])
+        writer.writerow([args.seed, args.train_size, mode, f1_macro_CNN_test, f1_micro_CNN_test])
     return log
 
 if __name__ == '__main__':

@@ -44,13 +44,9 @@ args = parser.parse_args()
 
 os.makedirs(f'../result/{args.seed}/{args.train_size}', exist_ok=True)
 
-batch_size = 512
-lr = 1e-4
-es_patience = 20
-
 def build_CNN(args):
 
-    with open(f'../data/X_CNN_{args.interpolation}.pickle', 'rb') as f:
+    with open(f'../data/X_CNN.pickle', 'rb') as f:
         X_CNN = pickle.load(f)
         X_CNN = np.expand_dims(X_CNN, 3).astype(np.float32) / 255
         X_CNN = X_CNN.transpose(0, 3, 1, 2)

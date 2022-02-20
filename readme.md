@@ -34,9 +34,9 @@ Wafer map defect pattern classification using CNN
 
 * Python
 * Pandas
-* Tensorflow
+* Pytorch
 * Scikit-learn
-* Scikit-image
+* OpenCV
 
 ## References
 

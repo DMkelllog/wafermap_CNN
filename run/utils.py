@@ -77,7 +77,7 @@ def training(model, dataloader_train, dataloader_val, mode, args):
 
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=1e-5)
     loss_fn = nn.CrossEntropyLoss()
-    lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, min_lr=1e-7, verbose=False)
+    lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, min_lr=1e-7, verbose=False)
 
     train_log, val_log = np.zeros(args.max_epochs), np.zeros(args.max_epochs)
 
@@ -87,7 +87,7 @@ def training(model, dataloader_train, dataloader_val, mode, args):
         model.train()
         total_loss, total_num = 0, 0
         for x, y in dataloader_train:
-            x, y = x.cuda(), y.cuda()
+            x, y = x.cuda()-0.5, y.cuda()
             
             y_pred = model(x)
             loss = loss_fn(y_pred, y)
@@ -96,7 +96,7 @@ def training(model, dataloader_train, dataloader_val, mode, args):
             loss.backward()
             optimizer.step()
 
-            total_loss += loss.item()
+            total_loss += loss.item() * y.size(0)
             total_num += y.size(0)
         train_loss = total_loss / total_num
 
@@ -104,12 +104,12 @@ def training(model, dataloader_train, dataloader_val, mode, args):
         total_loss, total_num = 0, 0
         with torch.no_grad():
             for x, y in dataloader_val:
-                x, y = x.cuda(), y.cuda()
+                x, y = x.cuda()-0.5, y.cuda()
 
                 y_pred = model(x)
                 loss = loss_fn(y_pred, y)
 
-                total_loss += loss.item()
+                total_loss += loss.item() * y.size(0)
                 total_num += y.size(0)
             val_loss = total_loss / total_num
         if args.print_freq == 0: pass
@@ -143,7 +143,7 @@ def inference(model, dataloader_test, y_test, y_set, args):
     y_hat = []
     with torch.no_grad():
         for x, y in dataloader_test:
-            x, y = x.cuda(), y.cuda()
+            x, y = x.cuda()-0.5, y.cuda()
             y_pred = model(x)
             y_hat.append(y_pred.cpu().numpy())
     y_hat = np.vstack(y_hat)

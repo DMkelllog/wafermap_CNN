@@ -25,7 +25,7 @@ def build_CNN(args):
 
     X_CNN_trainval, X_CNN_test, y_trainval, y_test = train_test_split(X_CNN, y, test_size=10000, random_state=args.seed, stratify=y)
     X_CNN_trainval, y_trainval = X_CNN_trainval[:args.train_size], y_trainval[:args.train_size]
-    X_CNN_train, X_CNN_val, y_train, y_val = train_test_split(X_CNN_trainval, y_trainval, test_size=0.2, random_state=args.seed, stratify=y_trainval)
+    X_CNN_train, X_CNN_val, y_train, y_val = train_test_split(X_CNN_trainval, y_trainval, test_size=0.2, random_state=args.seed)
 
     mode = 'CNN'
     print(f'{args.seed} {args.train_size}')
